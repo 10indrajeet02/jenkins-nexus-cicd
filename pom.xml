@@ -25,6 +25,7 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <nexus.base.url>http://host.docker.internal:8082</nexus.base.url>
     </properties>
 
     <dependencies>
@@ -87,12 +88,12 @@
         <repository>
             <id>nexus-releases</id>
             <name>Nexus Release Repository</name>
-            <url>http://localhost:8081/nexus/content/repositories/releases/</url>
+            <url>${nexus.base.url}/repository/maven-releases/</url>
         </repository>
         <snapshotRepository>
             <id>nexus-snapshots</id>
             <name>Nexus Snapshot Repository</name>
-            <url>http://localhost:8081/nexus/content/repositories/snapshots/</url>
+            <url>${nexus.base.url}/repository/maven-snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
