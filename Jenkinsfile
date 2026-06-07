@@ -9,7 +9,7 @@ pipeline {
     environment {
         // Set in Jenkins global tools and credentials
         MAVEN_HOME = tool 'Maven-3.9.11'
-        PATH = "${env.MAVEN_HOME}/bin;${env.PATH}"
+        PATH = "${env.MAVEN_HOME}/bin:${env.PATH}"
         SONARQUBE_SERVER = 'SonarQube'
         SONAR_PROJECT_KEY = 'jenkins-nexus-cicd'
         SONAR_PROJECT_NAME = 'jenkins-nexus-cicd'
@@ -24,13 +24,13 @@ pipeline {
 
         stage('Build') {
             steps {
-                bat 'mvn -B clean compile'
+                sh 'mvn -B clean compile'
             }
         }
 
         stage('Test') {
             steps {
-                bat 'mvn -B test'
+                sh 'mvn -B test'
             }
             post {
                 always {
@@ -42,7 +42,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
-                    bat "mvn -B sonar:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.projectName=${SONAR_PROJECT_NAME}"
+                    sh "mvn -B sonar:sonar -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.projectName=${SONAR_PROJECT_NAME}"
                 }
             }
         }
@@ -57,7 +57,7 @@ pipeline {
 
         stage('Package') {
             steps {
-                bat 'mvn -B -DskipTests package'
+                sh 'mvn -B -DskipTests package'
             }
         }
 
@@ -70,7 +70,7 @@ pipeline {
             }
             steps {
                 // Requires ~/.m2/settings.xml with nexus-releases and nexus-snapshots servers.
-                bat 'mvn -B -DskipTests deploy'
+                sh 'mvn -B -DskipTests deploy'
             }
         }
     }
