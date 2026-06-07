@@ -63,8 +63,27 @@ pipeline {
 
         stage('Deploy To Nexus') {
             steps {
-                // Requires ~/.m2/settings.xml with nexus-releases and nexus-snapshots servers.
-                sh 'mvn -B -DskipTests deploy'
+                                withCredentials([usernamePassword(credentialsId: 'nexus-creds', usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                                        sh '''mkdir -p ~/.m2
+cat > ~/.m2/settings.xml <<EOF
+<settings>
+    <servers>
+        <server>
+            <id>nexus-releases</id>
+            <username>${NEXUS_USER}</username>
+            <password>${NEXUS_PASS}</password>
+        </server>
+        <server>
+            <id>nexus-snapshots</id>
+            <username>${NEXUS_USER}</username>
+            <password>${NEXUS_PASS}</password>
+        </server>
+    </servers>
+</settings>
+EOF
+mvn -B -DskipTests deploy
+'''
+                                }
             }
         }
     }
