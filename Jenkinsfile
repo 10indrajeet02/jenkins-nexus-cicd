@@ -62,12 +62,6 @@ pipeline {
         }
 
         stage('Deploy To Nexus') {
-            when {
-                anyOf {
-                    branch 'main'
-                    branch 'master'
-                }
-            }
             steps {
                 // Requires ~/.m2/settings.xml with nexus-releases and nexus-snapshots servers.
                 sh 'mvn -B -DskipTests deploy'
